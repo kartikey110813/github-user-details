@@ -1,72 +1,136 @@
-import React, { useState ,useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 
 const App = () => {
-const [login, setLogin] = useState("");
-const [avatar, setAvatar] = useState("");
-const [name, setName] = useState("");
-const [repos, setRepos] = useState("");
-const [bio, setBio] = useState("");
-const [input, setInput] = useState("");
+  const [login, setLogin] = useState("");
+  const [avatar, setAvatar] = useState("");
+  const [name, setName] = useState("");
+  const [repos, setRepos] = useState("");
+  const [bio, setBio] = useState("");
+  const [input, setInput] = useState("");
+  const [html_url, setHtml_url] = useState("");
+  const [followers, setFollowers] = useState("");
+  const [error, setError] = useState("");
 
-useEffect(() => {
+  useEffect(() => {
     fetch("https://api.github.com/users/kartikey110813")
-    .then(res => res.json())
-    .then(data => {
-      setData(data);
-      console.log(data);
-    })
-}, [])
+      .then((res) => res.json())
+      .then((data) => {
+        setData(data);
+      });
+  }, []);
 
-const setData = ({login,avatar_url,name,public_repos,bio}) => {
-  setLogin(login)
-  setAvatar(avatar_url)
-  setName(name)
-  setRepos(public_repos)
-  setBio(bio)
-}
+  const setData = ({
+    login,
+    avatar_url,
+    name,
+    public_repos,
+    bio,
+    html_url,
+    followers,
+  }) => {
+    setLogin(login);
+    setAvatar(avatar_url);
+    setName(name);
+    setRepos(public_repos);
+    setBio(bio);
+    setHtml_url(html_url);
+    setFollowers(followers);
+  };
 
   const submitHandler = (e) => {
     e.preventDefault();
-   fetch(`https://api.github.com/users/${input}`)
-   .then(res => res.json())
-   .then(data => {
-     setData(data)
-   })
+    fetch(`https://api.github.com/users/${input}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.message) {
+          setError("Sorry This repository does not exist!");
+        } else {
+          setData(data);
+          setError("");
+        }
+      });
   };
-
 
   return (
     <div className="App">
-      <form className="w-50 mx-auto" onSubmit={submitHandler}>
-        <div className="">
-          <label for="exampleInputEmail1" className="form-label">
-            Enter Github Profile
-          </label>
-          <input
-            type="text"
-            className="form-control"
-            id="exampleInputEmail1"
-            aria-describedby="emailHelp"
-            onChange={(e) => setInput(e.target.value)}
-            value={input}
-          ></input>
+      <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div className="container-fluid">
+          <a className="navbar-brand " href="#">
+            Github Account Details
+          </a>
+          <button
+            className="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarTogglerDemo01"
+            aria-controls="navbarTogglerDemo01"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span className="navbar-toggler-icon"></span>
+          </button>
+          <div className="collapse navbar-collapse" id="navbarTogglerDemo01">
+            <br />
+            <br />
+            <form className="d-flex mx-auto" onSubmit={submitHandler}>
+              <input
+                id="exampleInputEmail1"
+                onChange={(e) => setInput(e.target.value)}
+                value={input}
+                placeholder="Enter Github Account"
+                className="form-control me-2"
+                type="search"
+                aria-label="Search"
+              ></input>
+              <button className="btn btn-outline-warning" type="submit">
+                Search
+              </button>
+            </form>
+          </div>
         </div>
-        <button type="submit" className="btn btn-primary m-5">
-          Submit
-        </button>
-      </form>
+      </nav>
 
-      <div className="card mx-auto  " style={{width: "18rem"}}>
-  <img src= {avatar} className="card-img-top" alt="..."></img>
-  <div className="card-body">
-    <h5 className="card-title">Name {name}</h5>
-    <h5 className="card-title">Username {login}</h5>
-    <h5 className="card-title">{repos} repositories</h5>
-    <p className="card-text">Bio :- {bio}</p>
-    
-  </div>
-</div>
+      {error ? (
+        <h2 className="text-center badge bg-danger">{error}</h2>
+      ) : (
+        <div
+          className="card mx-auto"
+          style={{ width: "40vh", marginTop: "5rem", border: "none" }}
+        >
+          <img
+            src={avatar}
+            className="card-img-top img-fluid"
+            style={{ borderRadius: "50%" }}
+            alt="..."
+          ></img>
+          <div className="card-body container">
+            <h3 className="card-title text-center">{name}</h3>
+            <a href={html_url} target="blank">
+              {" "}
+              <img
+                className=" d-flex mx-auto img-fluid"
+                src="https://cdn.icon-icons.com/icons2/2368/PNG/512/github_logo_icon_143772.png"
+                alt=""
+                width="15%"
+              />
+            </a>
+            <p className="card-title text-center">@{login}</p>
+            <h5 className="badge bg-info text-dark">
+              {repos} repositories
+            </h5>{" "}
+            <br />
+            <h5 className="badge bg-warning text-dark">
+              {followers} followers
+            </h5>{" "}
+            <br />
+            <p className="card-text text-center" style={{ fontWeight: "bold" }}>
+              {" "}
+              {bio}
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
