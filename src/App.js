@@ -56,9 +56,9 @@ const App = () => {
     <div className="App">
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
         <div className="container-fluid">
-          <a className="navbar-brand " href="#">
+          <p className="navbar-brand">
             Github Account Details
-          </a>
+          </p>
           <button
             className="navbar-toggler"
             type="button"
