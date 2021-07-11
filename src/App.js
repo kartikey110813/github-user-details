@@ -11,6 +11,7 @@ const App = () => {
   const [html_url, setHtml_url] = useState("");
   const [followers, setFollowers] = useState("");
   const [error, setError] = useState("");
+  const [numberOfRepos, setNumberOfRepos] = useState([]);
 
   useEffect(() => {
     fetch("https://api.github.com/users/kartikey110813")
@@ -50,7 +51,20 @@ const App = () => {
           setError("");
         }
       });
+
+      fetch(`https://api.github.com/users/${input}/repos`)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        setNumberOfRepos([data])
+      })
   };
+
+  const showNumberOfRepositories = (e) => {
+    e.preventDefault();
+    document.getElementById("reposId").style.display = "block"
+
+  }
 
   return (
     <div className="App">
@@ -117,8 +131,31 @@ const App = () => {
             </a>
             <p className="card-title text-center">@{login}</p>
             <h5 className="badge bg-info text-dark">
-              {repos} repositories
+             <button type="button" onClick ={showNumberOfRepositories} style={{background:"transparent", border:"none"}}>{repos} repositories</button> 
             </h5>{" "}
+            <br />
+           
+
+         <div id="reposId" style={{display:"none"}}>
+            {numberOfRepos.map((repos) => (
+                
+              <h5 key = {Math.floor(Math.random()*10)}>
+              {
+                
+                <p>
+                {repos.map((repo) => (
+                  <span key = {repo.id}>{repo.name} <br /></span>
+                ))}
+                </p>
+                  
+              }
+              </h5>
+            
+            ))}
+      
+            </div>
+
+
             <br />
             <h5 className="badge bg-warning text-dark">
               {followers} followers
